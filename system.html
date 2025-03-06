@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Lung Cancer Detection</title>
+<style>
+body {
+    font-family: sans-serif;
+    text-align: center;
+}
+.container {
+    width: 80%;
+    margin: 20px auto;
+}
+.hidden {
+    display: none;
+}
+#analysis-section, #results-section {
+    margin-top: 20px;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="home-section">
+    <h1>Lung Cancer Detection System</h1>
+    <p>Click the button below to analyze your lung image.</p>
+    <button onclick="showAnalysis()">Click Here to Analyze Image</button>
+</div>
+
+<div class="container hidden" id="analysis-section">
+    <h2>Image Analysis</h2>
+    <input type="file" id="image-upload" accept="image/*">
+    <button onclick="processImage()">Process Image</button>
+</div>
+
+<div class="container hidden" id="results-section">
+    <h2>Analysis Results</h2>
+    <div id="results-details"></div>
+    <p><a href="your_model_link_here" target="_blank">View Model Details</a></p>
+</div>
+
+<script>
+function showAnalysis() {
+    document.getElementById("home-section").classList.add("hidden");
+    document.getElementById("analysis-section").classList.remove("hidden");
+    document.getElementById("results-section").classList.add("hidden"); // Ensure results are hidden when moving to analysis
+}
+
+function processImage() {
+    const imageUpload = document.getElementById("image-upload");
+    const file = imageUpload.files[0];
+
+    if (!file) {
+        alert("Please upload an image.");
+        return;
+    }
+
+    // Simulate image processing (replace with actual model integration)
+    simulateProcessing(file);
+
+    document.getElementById("analysis-section").classList.add("hidden");
+    document.getElementById("results-section").classList.remove("hidden");
+}
+
+function simulateProcessing(file) {
+    // This is where you would integrate your machine learning model.
+    // For now, we'll simulate results with random data.
+    const resultsDetails = document.getElementById("results-details");
+    const randomProbability = Math.random();
+    const cancerDetected = randomProbability > 0.5;
+
+    let resultText = "";
+    if (cancerDetected) {
+        resultText = `<p><strong>Possible Lung Cancer Detected.</strong></p>
+                        <p>Probability: ${randomProbability.toFixed(2)}</p>
+                        <p>Further medical evaluation is recommended.</p>`;
+    } else {
+        resultText = `<p><strong>No Lung Cancer Detected (Low Probability).</strong></p>
+                        <p>Probability: ${randomProbability.toFixed(2)}</p>
+                        <p>However, regular checkups are important.</p>`;
+    }
+
+    resultsDetails.innerHTML = resultText;
+    console.log("Simulated processing complete.");
+}
+
+// Example of how to add client side image preview
+document.getElementById('image-upload').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Optional: You can display a preview of the uploaded image here.
+            // For example, create an <img> element and set its src to e.target.result.
+        }
+        reader.readAsDataURL(file);
+    }
+});
+
+</script>
+
+</body>
+</html>
+
+
+
+async function processImage() {
+    // ... (file retrieval)
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+        const response = await fetch('YOUR_API_ENDPOINT_URL', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        displayResults(result); // Create this function
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during processing.');
+    }
+}
+
+function displayResults(result) {
+    const resultsDetails = document.getElementById("results-details");
+    // Parse the result object and display the data.
+    resultsDetails.innerHTML = `<p>Probability: ${result.probability}</p> <p>Result: ${result.result}</p>`; //Example of how to access data.
+    document.getElementById("analysis-section").classList.add("hidden");
+    document.getElementById("results-section").classList.remove("hidden");
+}
+
